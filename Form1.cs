@@ -5,36 +5,18 @@ using MaterialSkin.Controls;
 using System;
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Drawing.Text;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.Design.AxImporter;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using Font = System.Drawing.Font;
 using Image = System.Drawing.Image;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Size = System.Drawing.Size;
 using ToolTip = System.Windows.Forms.ToolTip;
-using Timer = System.Timers.Timer;
 using MaterialSkin;
 
 namespace WindowsFormsApp2
@@ -88,7 +70,6 @@ namespace WindowsFormsApp2
 
 
         private readonly MaterialSkinManager materialSkinManager2 = MaterialSkinManager.Instance;
-
         private bool autoload = true;
         private List<FrPoint> frlist = new List<FrPoint>();
         private List<FrDev> frdevl = new List<FrDev>();
@@ -106,7 +87,6 @@ namespace WindowsFormsApp2
             panel3.Controls.Add(materialComboBox3);
             panel2.Controls.Add(pictureBox1);
 
-
             panel1.Controls.Add(materialButton3);
             panel1.Controls.Add(materialButton4);
 
@@ -114,21 +94,6 @@ namespace WindowsFormsApp2
 
             ToolTip t = new ToolTip();
             t.SetToolTip(label4, "Двойной клик чтобы ввести значение для масштабирования");
-
-
-            ////panel2.AutoScroll = true;
-            //PrivateFontCollection fontCollection = new PrivateFontCollection();
-            //fontCollection.AddFontFile("C:\\Users\\ccoo0\\source\\repos\\WindowsFormsApp2\\WindowsFormsApp2\\Properties\\roboto\\Roboto-Light.ttf"); // файл шрифта
-            //FontFamily family = fontCollection.Families[0];
-            //// Создаём шрифт и используем далее
-            //Font font = new Font(family, 14);
-
-            //groupBox1.Font = font;
-            //button1.Font = font;
-            //button2.Font = font;
-            //button3.Font = font;
-            //button4.Font = font;
-
         }
 
         private void tick_start()
@@ -140,9 +105,7 @@ namespace WindowsFormsApp2
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //do whatever you want 
             chart_Load();
-           //иногда делает дважды
         }
 
         bool start = false;
@@ -151,12 +114,8 @@ namespace WindowsFormsApp2
         {
 
             bd_things();
-
             chart_Load();
-
             loadImage();
-
-            //if (pictureBox1.Image == null)
 
             start = true;
         }
@@ -239,7 +198,6 @@ namespace WindowsFormsApp2
                 try
                 {
                     string sql = "SELECT * FROM frinfo WHERE npip=" + materialComboBox1.Text + " and nsection=" + materialComboBox2.Text + " and npoint=" + materialComboBox3.Text + " order by npip, nsection, npoint, checktime;";
-                    //tring sql = "SELECT * FROM frinfo;";
                     SqlCommand command = new SqlCommand(sql, connection);
                     SqlDataReader reader = command.ExecuteReader();
 
@@ -262,18 +220,8 @@ namespace WindowsFormsApp2
                 }
             }
 
-            //Series mySeriesOfPoint = new Series("freq");
-            //mySeriesOfPoint.ChartType = SeriesChartType.Line;
-
-            //mySeriesOfPoint.ChartArea = "Math functions";
-
-            //определять нормальную частоту после калибровки
-            //avg = 0;
             infoAVG();
 
-
-
-            //СДЕЛАТЬ КОНТРОЛЬ ДЛЯ ОДНОЙ ТРУБЫ  
             for (int i = 0; i < frlist.Count; i++)
             {
 
@@ -285,36 +233,23 @@ namespace WindowsFormsApp2
 
             }
 
-
-
             chart1.ChartAreas[0].AxisY.Maximum = frlist.Select(a => a.freq).Max() + 10;
             chart1.ChartAreas[0].AxisY.Minimum = frlist.Select(a => a.freq).Min() - 10;
-
-            //chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Hours;
-            //chart1.ChartAreas[0].AxisX.Maximum = frlist.Select(a => a.dcheck).Max();
-            //chart1.ChartAreas[0].AxisX.Minimum = frlist.Select(a => a.dcheck).Min();
 
             if (avg > chart1.ChartAreas[0].AxisY.Maximum) chart1.ChartAreas[0].AxisY.Maximum = avg + 10;
             if (avg < chart1.ChartAreas[0].AxisY.Minimum) chart1.ChartAreas[0].AxisY.Minimum = avg - 10;
 
             chart1.Series[0].XValueType = ChartValueType.DateTime;
 
-
-
             chart1.ChartAreas[0].AxisX.LabelStyle.Format = "hh-mm";
             chart1.Series[0].XValueType = ChartValueType.DateTime;
 
             chart1.ChartAreas[0].AxisX.Maximum = 45;
-            //chart1.ChartAreas[0].AxisX.Maximum = DateTime.Now.AddMinutes(1).ToOADate();
             chart1.ChartAreas[0].AxisX.Maximum = frlist.Select(a => a.dcheck).Max().ToOADate();
             chart1.ChartAreas[0].AxisX.Minimum = frlist.Select(a => a.dcheck).Min().ToOADate();
             chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Minutes;
             chart1.ChartAreas[0].AxisX.Interval = 10;
 
-
-            ////Добавляем созданный набор точек в Chart
-
-            //chart1.Series.Add(mySeriesOfPoint);
             chart1.ChartAreas[0].AxisY.LabelStyle.Format = "{0:0.0}";
             chart1.Series[0].MarkerSize = 6;
             chart1.Series[0].MarkerColor = Color.DeepPink;
@@ -328,7 +263,7 @@ namespace WindowsFormsApp2
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //connection.Close();
+
         }
 
         double imscale = 1;
@@ -339,10 +274,8 @@ namespace WindowsFormsApp2
             label4.Visible = false;
             if (File.Exists(materialComboBox1.Text + "-" + materialComboBox2.Text + "-" + materialComboBox3.Text + ".bmp"))
             {
-
                 try
                 {
-
                     sc = 100;
                     imscale = 1;
 
@@ -369,22 +302,6 @@ namespace WindowsFormsApp2
                         }
                         else
                         {
-                            //if (newImage.Width > 10000 || newImage.Height > 10000)
-                            //{
-                            //    b2 = new Bitmap(newImage, new Size(newImage.Width / 10, newImage.Height / 10));
-                            //    sc = 10;
-                            //}
-                            //else if (newImage.Width > 5000 || newImage.Height > 5000)
-                            //{
-                            //    b2 = new Bitmap(newImage, new Size(newImage.Width / 5, newImage.Height / 5));
-                            //    sc = 20;
-                            //}
-                            //else if (newImage.Width > 2000 || newImage.Height > 2000)
-                            //{
-                            //    b2 = new Bitmap(newImage, new Size(newImage.Width / 2, newImage.Height / 2));
-                            //    sc = 50;
-
-                            //}
                             imscale = sc / 100;
                             label4.Text = Convert.ToInt32(sc).ToString();
                         }
@@ -394,10 +311,6 @@ namespace WindowsFormsApp2
 
                     pictureBox1.Image = b2;
                     isimage = true;
-
-                    //materialLabel1.Visible = true;
-                    //materialLabel1.Text = sc.ToString() + "%";
-
                     pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
                     pictureBox1.Dock = DockStyle.None;
                 }
@@ -407,11 +320,6 @@ namespace WindowsFormsApp2
             {
                 pictureBox1.ImageLocation = "C:\\Users\\ccoo0\\source\\repos\\WindowsFormsApp2\\WindowsFormsApp2\\Properties\\imnull.png";
                 isimage = false;
-
-                //materialLabel1.Visible = false;
-                //materialLabel1.Text = sc.ToString() + "%";
-
-
                 pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
                 pictureBox1.Dock = DockStyle.Fill;
             }
@@ -422,10 +330,8 @@ namespace WindowsFormsApp2
 
         private void materialComboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             if (start == true)
             {
-
                 chart_Load();
                 loadImage();
 
@@ -485,9 +391,6 @@ namespace WindowsFormsApp2
                 loadImage();
 
             }
-
-            //if (start == true)
-            //chart_Load();
         }
 
         private void materialButton1_Click(object sender, EventArgs e)
@@ -513,37 +416,16 @@ namespace WindowsFormsApp2
 
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        //Get the path of specified file
                         path = openFileDialog.FileName;
-
-                        //Read the contents of the file into a stream
                         fileStream = openFileDialog.OpenFile();
-
-
-                        //var doc = new Document(fileStream);
-                        //var extractedPage = doc.ExtractPages(0, 1);
-                        //extractedPage.Save("1.bmp");
-
-                        //pictureBox1.ImageLocation = "1.bmp";
-
-
                         using (var pdf = new PdfDocument(fileStream))
                         {
                             PdfDrawOptions options = PdfDrawOptions.Create();
                             options.BackgroundColor = new PdfRgbColor(255, 255, 255);
                             options.HorizontalResolution = 300;
                             options.VerticalResolution = 300;
-
-                            //for (int i = 0; i < pdf.PageCount; ++i)
-                            //pdf.Pages[i].Save($"page_{i}.png", options);
-
-
-
                             pdf.Pages[0].Save(materialComboBox1.Text + "-" + materialComboBox2.Text + "-" + materialComboBox3.Text + ".bmp", options);
-
-
                             Thread.Sleep(2000);
-
                             sc = 100;
 
 
@@ -552,93 +434,21 @@ namespace WindowsFormsApp2
                                 newImage = new Bitmap(image, image.Size);
                             }
                             Bitmap b2 = new Bitmap(newImage);
-                            //if (newImage.Width > 10000 || newImage.Height > 10000)
-                            //{
-                            //    b2 = new Bitmap(newImage, new Size(newImage.Width / 10, newImage.Height / 10));
-                            //    sc = 10;
-
-                            //}
-                            //else if (newImage.Width > 5000 || newImage.Height > 5000)
-                            //{
-                            //    b2 = new Bitmap(newImage, new Size(newImage.Width / 5, newImage.Height / 5));
-                            //    sc = 20;
-
-                            //}
-                            //else if (newImage.Width > 2000 || newImage.Height > 2000)
-                            //{
-                            //    b2 = new Bitmap(newImage, new Size(newImage.Width / 2, newImage.Height / 2));
-                            //    sc = 50;
-
-                            //}
                             label4.Text = Convert.ToInt32(sc).ToString();
                             imscale = sc / 100;
                             pictureBox1.Image = b2;
                             isimage = true;
                             label4.Visible = true;
-
-                            //string connectionString = @"Data Source=LAPTOP-TT8JMRC0\SQLEXPRESS;Initial Catalog=SSBD;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False";
-                            //using (SqlConnection connection = new SqlConnection(connectionString))
-                            //{
-
-                            //    connection.Open();
-                            //    string queryString1 = "select AVG(imscale) from avgfreq where npip=" + materialComboBox1.Text + " and nsection=" + materialComboBox2.Text + " and npoint=" + materialComboBox3.Text + ";";
-                            //    SqlCommand cmd1 = new SqlCommand(queryString1, connection);
-                            //    object returnVal = cmd1.ExecuteScalar();
-                            //    imscale = sc / 100;
-                            //    if (!DBNull.Value.Equals(returnVal))
-                            //    {
-
-                            //        queryString1 = "update avgfreq " + "set imscale=" + imscale.ToString().Replace(',', '.') + " where npip=" + materialComboBox1.Text + " and nsection=" + materialComboBox2.Text + " and npoint=" + materialComboBox3.Text + ";";
-                            //        cmd1 = new SqlCommand(queryString1, connection);
-                            //        returnVal = cmd1.ExecuteNonQuery();
-                            //    }
-                            //    else
-                            //    {
-                            //        queryString1 = "insert into avgfreq values(" + materialComboBox1.Text + ", " + materialComboBox2.Text + ", " + materialComboBox3.Text + ", null," + imscale.ToString().Replace(',', '.') + ");";
-                            //        cmd1 = new SqlCommand(queryString1, connection);
-                            //        returnVal = cmd1.ExecuteNonQuery();
-                            //    }
-
-                            //    connection.Close();
-                            //}
-
-
-                            //materialLabel1.Visible = true;
-                            //materialLabel1.Text = sc.ToString() + "%";
                         }
 
                         pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
                         pictureBox1.Dock = DockStyle.None;
-
-
-
-
-                        //for (int page = 0; page < doc.PageCount; page++)
-                        //{
-                        //    var extractedPage = doc.ExtractPages(page, 1);
-                        //    extractedPage.Save($"Output_{page + 1}.bmp");
-                        //}
-
-                        //using (StreamReader reader = new StreamReader(fileStream))
-                        //{
-                        //    fileContent = reader.ReadToEnd();
-                        //}
-                        //using (StreamReader reader = new StreamReader(fileStream))
-                        //{
-                        //    while (!reader.EndOfStream)
-                        //    {
-
-
-                        //    }
-                        //}
                     }
                 }
-                //using (StreamReader reader = new StreamReader(path + "\\load.csv"))
-
             }
             catch
             {
-                //MessageBox.Show("Incorrect pdf");
+                MessageBox.Show("Incorrect pdf");
             }
         }
 
@@ -648,12 +458,9 @@ namespace WindowsFormsApp2
             {
                 Bitmap b2 = new Bitmap(newImage, new Size(Convert.ToInt32(pictureBox1.Image.Width * 0.8), Convert.ToInt32(pictureBox1.Image.Height * 0.8)));
                 pictureBox1.Image = b2;
-
                 sc *= 0.8;
                 imscale = sc / 100;
                 label4.Text = Convert.ToInt32(sc).ToString();
-                //if (sc > 10) sc = (sc / 10) * 10;
-                //materialLabel1.Text = sc.ToString() + "%";
             }
         }
 
@@ -663,13 +470,9 @@ namespace WindowsFormsApp2
             {
                 Bitmap b2 = new Bitmap(newImage, new Size(Convert.ToInt32(pictureBox1.Image.Width * 1.2), Convert.ToInt32(pictureBox1.Image.Height * 1.2)));
                 pictureBox1.Image = b2;
-
                 sc *= 1.2;
                 imscale = sc / 100;
                 label4.Text = Convert.ToInt32(sc).ToString();
-                //if (sc > 10) sc = (sc / 10) * 10;
-                //materialLabel1.Text = sc.ToString() + "%";
-
             }
         }
 
@@ -684,11 +487,6 @@ namespace WindowsFormsApp2
                     File.Delete(fileName);
                     pictureBox1.ImageLocation = "C:\\Users\\ccoo0\\source\\repos\\WindowsFormsApp2\\WindowsFormsApp2\\Properties\\imnull.png";
                     isimage = false;
-
-                    //materialLabel1.Visible = false;
-                    //materialLabel1.Text = sc.ToString() + "%";
-
-
                     pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
                     pictureBox1.Dock = DockStyle.Fill;
                 }
@@ -737,39 +535,17 @@ namespace WindowsFormsApp2
 
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        //Get the path of specified file
                         path = openFileDialog.FileName;
-
-                        //Read the contents of the file into a stream
                         fileStream = openFileDialog.OpenFile();
-
-
-                        //var doc = new Document(fileStream);
-                        //var extractedPage = doc.ExtractPages(0, 1);
-                        //extractedPage.Save("1.bmp");
-
-                        //pictureBox1.ImageLocation = "1.bmp";
-
-
                         using (var pdf = new PdfDocument(fileStream))
                         {
                             PdfDrawOptions options = PdfDrawOptions.Create();
                             options.BackgroundColor = new PdfRgbColor(255, 255, 255);
                             options.HorizontalResolution = 300;
                             options.VerticalResolution = 300;
-
-                            //for (int i = 0; i < pdf.PageCount; ++i)
-                            //pdf.Pages[i].Save($"page_{i}.png", options);
-
-
-
                             pdf.Pages[0].Save(materialComboBox1.Text + "-" + materialComboBox2.Text + "-" + materialComboBox3.Text + ".bmp", options);
-
-
                             Thread.Sleep(2000);
-
                             sc = 100;
-
                             using (var image = new Bitmap(materialComboBox1.Text + "-" + materialComboBox2.Text + "-" + materialComboBox3.Text + ".bmp"))
                             {
                                 newImage = new Bitmap(image, image.Size);
@@ -793,41 +569,16 @@ namespace WindowsFormsApp2
                             pictureBox1.Image = b2;
                             isimage = true;
                             label4.Visible = true;
-
                         }
 
                         pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
                         pictureBox1.Dock = DockStyle.None;
-
-
-
-
-                        //for (int page = 0; page < doc.PageCount; page++)
-                        //{
-                        //    var extractedPage = doc.ExtractPages(page, 1);
-                        //    extractedPage.Save($"Output_{page + 1}.bmp");
-                        //}
-
-                        //using (StreamReader reader = new StreamReader(fileStream))
-                        //{
-                        //    fileContent = reader.ReadToEnd();
-                        //}
-                        //using (StreamReader reader = new StreamReader(fileStream))
-                        //{
-                        //    while (!reader.EndOfStream)
-                        //    {
-
-
-                        //    }
-                        //}
                     }
                 }
-                //using (StreamReader reader = new StreamReader(path + "\\load.csv"))
-
             }
             catch
             {
-                //MessageBox.Show("Incorrect pdf");
+                MessageBox.Show("Incorrect pdf");
             }
         }
 
@@ -845,11 +596,6 @@ namespace WindowsFormsApp2
                         File.Delete(fileName);
                         pictureBox1.ImageLocation = "C:\\Users\\ccoo0\\source\\repos\\WindowsFormsApp2\\WindowsFormsApp2\\Properties\\imnull.png";
                         isimage = false;
-
-                        //materialLabel1.Visible = false;
-                        //materialLabel1.Text = sc.ToString() + "%";
-
-
                         pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
                         pictureBox1.Dock = DockStyle.Fill;
                     }
@@ -891,7 +637,6 @@ namespace WindowsFormsApp2
                 }
                 materialComboBox3.SelectedIndex = id;
                 start = true;
-                //коммент
             }
             else
             {
@@ -942,9 +687,6 @@ namespace WindowsFormsApp2
             changeAVG();
             chart_Load();
             MessageBox.Show("Ожидаемая частота точки равна " + avg.ToString(), "Калибровка завершена");
-
-
-
         }
         bool textmode = false;
         private void button10_Click(object sender, EventArgs e)
@@ -1000,7 +742,6 @@ namespace WindowsFormsApp2
                 string queryString1 = "select avg(npip) from avgfreq where npip=" + materialComboBox1.Text + " and nsection=" + materialComboBox2.Text + " and npoint=" + materialComboBox3.Text + ";";
                 SqlCommand cmd1 = new SqlCommand(queryString1, connection);
                 object returnVal = cmd1.ExecuteScalar();
-                //imscale = sc / 100;
                 imscale += 0;
                 imscale.ToString();
                 if (!DBNull.Value.Equals(returnVal))
@@ -1098,23 +839,10 @@ namespace WindowsFormsApp2
                         double avgfreq = Convert.ToDouble(reader.GetValue(4));
 
                         double deviation = Convert.ToDouble(reader.GetValue(5));
-
                         DateTime dcheck = Convert.ToDateTime(reader.GetValue(6));
-
-
                         FrDev frdev = new FrDev(npip, nsection, npoint, freq, avgfreq, deviation, dcheck);
                         frdevl.Add(frdev);
                     }
-                    //if (!DBNull.Value.Equals(returnVal))
-                    //{
-                    //    avg = Convert.ToDouble(returnVal);
-                    //}
-                    //else
-                    //{
-                    //    ogr[gojgo[jrw[ojgh[o]]]]
-                    //    avg = 0;
-                    //}
-
                     connection.Close();
                 }
                 for (int i = 0; i < frdevl.Count; i++)
@@ -1130,7 +858,6 @@ namespace WindowsFormsApp2
         {
             try
             {
-                
                 string connectionString = @"Data Source=LAPTOP-TT8JMRC0\SQLEXPRESS;Initial Catalog=SSBD;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False";
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -1169,15 +896,6 @@ namespace WindowsFormsApp2
                             int i = frdevl1.Count() - 1;
                             dataGridView1.Rows.Add(frdevl1[i].npip, frdevl1[i].nsection, frdevl1[i].npoint, frdevl1[i].freq, frdevl1[i].avgfreq, frdevl1[i].deviation, frdevl1[i].dcheck.ToShortTimeString());
                         }
-                        //if (!DBNull.Value.Equals(returnVal))
-                        //{
-                        //    avg = Convert.ToDouble(returnVal);
-                        //}
-                        //else
-                        //{
-                        //    ogr[gojgo[jrw[ojgh[o]]]]
-                        //    avg = 0;
-                        //}
                     }
                     connection.Close();
                 }
@@ -1304,8 +1022,6 @@ namespace WindowsFormsApp2
                     if (result.ToString() == "OK")
                         path = folderDialog.SelectedPath;
                 }
-                //string s = DateTime.Now.ToString().Replace("{", "").Replace("}", "").Replace(".", "").Replace(":", "");
-                //StreamWriter f = new StreamWriter(path + "\\" + "result " + s.Trim() + ".csv");
                 string s = materialComboBox1.Text + " " + materialComboBox2.Text + " " + materialComboBox3.Text + " " + DateTime.Now.ToString().Replace("{", "").Replace("}", "").Replace(".", "").Replace(":", "");
                 StreamWriter f = new StreamWriter(path + "\\" + "result " + s.Trim() + ".csv");
 
@@ -1368,13 +1084,10 @@ namespace WindowsFormsApp2
                     if (result.ToString() == "OK")
                         path = folderDialog.SelectedPath;
                 }
-                //string s = DateTime.Now.ToString().Replace("{", "").Replace("}", "").Replace(".", "").Replace(":", "");
-                //StreamWriter f = new StreamWriter(path + "\\" + "result " + s.Trim() + ".csv");
                 string s = DateTime.Now.ToString().Replace("{", "").Replace("}", "").Replace(".", "").Replace(":", "");
                 StreamWriter f = new StreamWriter(path + "\\" + "result " + s.Trim() + ".csv");
 
                 string connectionString = @"Data Source=LAPTOP-TT8JMRC0\SQLEXPRESS;Initial Catalog=SSBD;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False";
-                
 
                 for (int i=0; i<frdevl1.Count; i++)
                 {
@@ -1384,18 +1097,11 @@ namespace WindowsFormsApp2
                     int npoint = frdevl1[i].npoint;
                     DateTime dcheck = frdevl1[i].dcheck;
                     double freq = frdevl1[i].freq;
-
                     double avgfreq = frdevl1[i].avgfreq;
-
                     double deviation = frdevl1[i].deviation;
-
-
-
-
                     int pos = dcheck.ToString().IndexOf(' ');
                     string res = dcheck.ToString().Substring(0, pos);
 
-                    
                     f.WriteLine(
                         npip.ToString() + ";" +
                         nsection.ToString() + ";" +
@@ -1406,14 +1112,8 @@ namespace WindowsFormsApp2
                         deviation.ToString() + ";" +
                         dcheck.ToString()
                         );
-
-                    
                 }
-
-                
                 f.Close();
-
-                
             }
             catch
             {
@@ -1434,8 +1134,6 @@ namespace WindowsFormsApp2
                     if (result.ToString() == "OK")
                         path = folderDialog.SelectedPath;
                 }
-                //string s = DateTime.Now.ToString().Replace("{", "").Replace("}", "").Replace(".", "").Replace(":", "");
-                //StreamWriter f = new StreamWriter(path + "\\" + "result " + s.Trim() + ".csv");
                 string s = materialComboBox1.Text + " " + materialComboBox2.Text + " " + DateTime.Now.ToString().Replace("{", "").Replace("}", "").Replace(".", "").Replace(":", "");
                 StreamWriter f = new StreamWriter(path + "\\" + "result " + s.Trim() + ".csv");
 
@@ -1459,9 +1157,6 @@ namespace WindowsFormsApp2
                         DateTime dcheck = Convert.ToDateTime(reader.GetValue(3));
 
                         double freq = Convert.ToDouble(reader.GetValue(5));
-
-
-
                         int pos = dcheck.ToString().IndexOf(' ');
                         string res = dcheck.ToString().Substring(0, pos);
 

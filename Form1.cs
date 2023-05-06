@@ -1,9 +1,6 @@
-﻿using Aspose.Words;
-using Aspose.Words.Drawing;
-using BitMiracle.Docotic.Pdf;
+﻿using BitMiracle.Docotic.Pdf;
 using MaterialSkin.Controls;
 using System;
-
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -24,8 +21,6 @@ namespace WindowsFormsApp2
 
     public partial class Form1 : MaterialForm
     {
-
-
         private class FrPoint
         {
             public int npip;
